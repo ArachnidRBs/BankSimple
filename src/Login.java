@@ -17,18 +17,23 @@ public class Login {
                 String user = parts[0].toLowerCase();
                 String pass = parts[1];
                 allUsers.add(user + "," + pass);
-                if (user.equals(username.toLowerCase()) && pass.equals(password)) {
-                    System.out.println("Attempting to authenticate user...");
-                    try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("src\\AuthenticatedUser.txt"));
-                        writer.write(username);
-                        writer.close();
-                        returnResponse[0] = "true";
-                    } catch (Exception e) {
+                if (user.equals(username.toLowerCase())) {
+                    if (pass.equals(password)) {
+                        System.out.println("Attempting to authenticate user...");
+                        try {
+                            BufferedWriter writer = new BufferedWriter(new FileWriter("src\\AuthenticatedUser.txt"));
+                            writer.write(username);
+                            writer.close();
+                            returnResponse[0] = "true";
+                        } catch (Exception e) {
+                            returnResponse[0] = "false";
+                            returnResponse[1] = "Error authenticating!";
+                        }
+                        break;
+                    } else {
                         returnResponse[0] = "false";
-                        returnResponse[1] = "Error authenticating!";
+                        returnResponse[1] = "Incorrect Password";
                     }
-                    break;
                 }
             }
             reader.close(); // Close the reader after reading all lines

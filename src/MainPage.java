@@ -1,3 +1,7 @@
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -8,12 +12,21 @@
  * @author User
  */
 public class MainPage extends javax.swing.JFrame {
+    public static double balance;
 
     /**
      * Creates new form MainPage
      */
     public MainPage() {
         initComponents();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("src\\AuthenticatedUser.txt"));
+            String username = reader.readLine();
+            String[] response = Balance.getBalance(username);
+            welcomeText.setText("Welcome " + username);
+        } catch (Exception e) {
+            System.out.println("Error getting name");
+        }
     }
 
     /**
@@ -28,7 +41,7 @@ public class MainPage extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        welcomeText = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         withdrawPageButton = new javax.swing.JButton();
         depositPageButton = new javax.swing.JButton();
@@ -56,9 +69,14 @@ public class MainPage extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(0, 204, 51));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/walletIcon.png"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("Welcome ......................");
+        welcomeText.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        welcomeText.setText("Welcome ......................");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -66,7 +84,7 @@ public class MainPage extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addComponent(jLabel2)
+                .addComponent(welcomeText)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(23, 23, 23))
@@ -79,7 +97,7 @@ public class MainPage extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(jLabel2)
+                .addComponent(welcomeText)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -329,9 +347,14 @@ public class MainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_depositPageButtonActionPerformed
 
     private void jLabel16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel16MouseClicked
-        new Transactions().setVisible(true);
+        new TransactionsPage().setVisible(true);
         dispose();
     }//GEN-LAST:event_jLabel16MouseClicked
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        new BalancePage().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -376,7 +399,6 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JButton depositPageButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -391,6 +413,7 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JLabel transactionNumber2;
     private javax.swing.JLabel type1;
     private javax.swing.JLabel type2;
+    private javax.swing.JLabel welcomeText;
     private javax.swing.JButton withdrawPageButton;
     // End of variables declaration//GEN-END:variables
 }

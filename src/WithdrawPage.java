@@ -1,19 +1,30 @@
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.awt.Color;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author User
  */
 public class WithdrawPage extends javax.swing.JFrame {
 
-    /**
-     * Creates new form WithdrawPage
-     */
+    public static String username;
+
     public WithdrawPage() {
         initComponents();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("src\\AuthenticatedUser.txt"));
+            username = reader.readLine();
+            String[] response = Balance.getBalance(username);
+            welcomeText.setText("Welcome " + username);
+        } catch (Exception e) {
+            System.out.println("Error getting name");
+        }
     }
 
     /**
@@ -37,7 +48,7 @@ public class WithdrawPage extends javax.swing.JFrame {
         homeButton = new javax.swing.JButton();
         withdrawButton = new javax.swing.JButton();
         currentBalance = new javax.swing.JLabel();
-        afterBalance = new javax.swing.JLabel();
+        errorField = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,11 +131,12 @@ public class WithdrawPage extends javax.swing.JFrame {
             }
         });
 
+        currentBalance.setForeground(new java.awt.Color(0, 102, 0));
         currentBalance.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         currentBalance.setText("Current Balance: $");
 
-        afterBalance.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        afterBalance.setText("Balance After: $");
+        errorField.setForeground(new java.awt.Color(0, 102, 0));
+        errorField.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -153,11 +165,10 @@ public class WithdrawPage extends javax.swing.JFrame {
                         .addComponent(amountWithdraw, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(278, 278, 278)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(withdrawButton, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(currentBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                                .addComponent(afterBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(withdrawButton, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                            .addComponent(currentBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                            .addComponent(errorField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -174,15 +185,15 @@ public class WithdrawPage extends javax.swing.JFrame {
                 .addComponent(withdrawButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(currentBalance)
+                .addGap(34, 34, 34)
+                .addComponent(errorField, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(afterBalance)
-                .addGap(48, 48, 48)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel10)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -200,15 +211,11 @@ public class WithdrawPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void amountWithdrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountWithdrawActionPerformed
-        
+
     }//GEN-LAST:event_amountWithdrawActionPerformed
 
     private void amountWithdrawKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountWithdrawKeyTyped
-        char c = evt.getKeyChar();
 
-        if (!Character.isDigit(c) || c != '.'){
-            evt.consume();
-        }
     }//GEN-LAST:event_amountWithdrawKeyTyped
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
@@ -217,7 +224,48 @@ public class WithdrawPage extends javax.swing.JFrame {
     }//GEN-LAST:event_homeButtonActionPerformed
 
     private void withdrawButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawButtonActionPerformed
-        // TODO add your handling code here:
+        Color red = new Color(102, 0, 0);
+        Color green = new Color(0, 102, 0);
+
+        errorField.setForeground(red);
+        String stringedAmount = amountWithdraw.getText();
+        double amount = 0.0;
+        try {
+            amount = Double.parseDouble(stringedAmount);
+        } catch (Exception e) {
+            errorField.setText("Please enter an amount.");
+            return;
+        }
+
+        try {
+            String authenticatedUser = username;
+            if (authenticatedUser == null) {
+                errorField.setText("No authenticated user found. Please log in first.");
+                return;
+            }
+
+            String[] response = Balance.getBalance(authenticatedUser);
+            if (response[0].equals("true")) {
+                double currentBalance = Double.parseDouble(response[1]);
+                double withdrawAmount = amount;
+
+                if (withdrawAmount > currentBalance) {
+                    errorField.setText("Insufficient funds.");
+                    return;
+                }
+
+                Balance.updateBalance(authenticatedUser, -withdrawAmount);
+                errorField.setText("Withdrawal successful!");
+                errorField.setForeground(green);
+                // Update the balance labels
+                String[] newBalance = Balance.getBalance(authenticatedUser);
+                this.currentBalance.setText("Current Balance: $" + newBalance[1]);
+            } else {
+                errorField.setText("Balance Error!");
+            }
+        } catch (Exception e) {
+            errorField.setText("An error occured!");
+        }
     }//GEN-LAST:event_withdrawButtonActionPerformed
 
     /**
@@ -256,10 +304,10 @@ public class WithdrawPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel afterBalance;
     private javax.swing.JTextField amountWithdraw;
     private javax.swing.JLabel balanceButton;
     private javax.swing.JLabel currentBalance;
+    private javax.swing.JLabel errorField;
     private javax.swing.JButton homeButton;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;

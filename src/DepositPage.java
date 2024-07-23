@@ -1,3 +1,7 @@
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -8,12 +12,19 @@
  * @author User
  */
 public class DepositPage extends javax.swing.JFrame {
-
+    public static String username;
     /**
      * Creates new form DepositPage
      */
     public DepositPage() {
         initComponents();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("src\\AuthenticatedUser.txt"));
+            username = reader.readLine();
+            welcomeText.setText("Welcome " + username);
+        } catch (Exception e) {
+            System.out.println("Error getting name");
+        }
     }
 
     /**
@@ -38,6 +49,7 @@ public class DepositPage extends javax.swing.JFrame {
         homeButton = new javax.swing.JButton();
         currentBalance = new javax.swing.JLabel();
         afterBalance = new javax.swing.JLabel();
+        errorField = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -131,6 +143,8 @@ public class DepositPage extends javax.swing.JFrame {
         afterBalance.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         afterBalance.setText("Balance After: $");
 
+        errorField.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -148,17 +162,18 @@ public class DepositPage extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(homeButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(282, 282, 282)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(depositButton, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                            .addComponent(afterBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(currentBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(308, 308, 308)
                         .addComponent(amountDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(345, 345, 345)
-                        .addComponent(jLabel3)))
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(282, 282, 282)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(depositButton, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                            .addComponent(afterBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(currentBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(errorField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(83, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -177,13 +192,15 @@ public class DepositPage extends javax.swing.JFrame {
                 .addComponent(currentBalance)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(afterBalance)
-                .addGap(46, 46, 46)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(errorField, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel10)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -201,8 +218,43 @@ public class DepositPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void depositButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_depositButtonActionPerformed
-        new DepositPage().setVisible(true);
-        dispose();
+        Color red = new Color(102, 0, 0);
+        Color green = new Color(0, 102, 0);
+
+        errorField.setForeground(red);
+        String stringedAmount = amountDeposit.getText();
+        double amount = 0.0;
+        try {
+            amount = Double.parseDouble(stringedAmount);
+        } catch (Exception e) {
+            errorField.setText("Please enter an amount.");
+            return;
+        }
+
+        try {
+            String authenticatedUser = username;
+            if (authenticatedUser == null) {
+                errorField.setText("No authenticated user found. Please log in first.");
+                return;
+            }
+
+            String[] response = Balance.getBalance(authenticatedUser);
+            if (response[0].equals("true")) {
+                double currentBalance = Double.parseDouble(response[1]);
+                double depositAmount = amount;
+
+                Balance.updateBalance(authenticatedUser, depositAmount);
+                errorField.setText("Deposit successful!");
+                errorField.setForeground(green);
+                // Update the balance labels
+                String[] newBalance = Balance.getBalance(authenticatedUser);
+                this.currentBalance.setText("Current Balance: $" + newBalance[1]);
+            } else {
+                errorField.setText("Balance Error!");
+            }
+        } catch (Exception e) {
+            errorField.setText("An error occured!" + e);
+        }
     }//GEN-LAST:event_depositButtonActionPerformed
 
     private void amountDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountDepositActionPerformed
@@ -210,11 +262,7 @@ public class DepositPage extends javax.swing.JFrame {
     }//GEN-LAST:event_amountDepositActionPerformed
 
     private void amountDepositKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountDepositKeyTyped
-        char c = evt.getKeyChar();
         
-        if (!Character.isDigit(c) || c != '.'){
-            evt.consume();
-        }
     }//GEN-LAST:event_amountDepositKeyTyped
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
@@ -268,6 +316,7 @@ public class DepositPage extends javax.swing.JFrame {
     private javax.swing.JLabel balanceButton;
     private javax.swing.JLabel currentBalance;
     private javax.swing.JButton depositButton;
+    private javax.swing.JLabel errorField;
     private javax.swing.JButton homeButton;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;

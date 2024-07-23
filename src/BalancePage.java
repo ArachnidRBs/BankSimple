@@ -1,19 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+import java.io.*;
+import java.awt.*;
 
-/**
- *
- * @author User
- */
 public class BalancePage extends javax.swing.JFrame {
-
-    /**
-     * Creates new form BalancePage
-     */
+    
+    public static String username = "";
+    
     public BalancePage() {
         initComponents();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("src\\AuthenticatedUser.txt"));
+            username = reader.readLine();
+            String[] response = Balance.getBalance(username);
+            welcomeText.setText("Welcome " + username);
+            if (response[0].equals("true")) {
+                double withdraw = Double.parseDouble(response[2]);
+                double deposit = Double.parseDouble(response[3]);
+                double budget = Double.parseDouble(response[4]);
+                double budgetLeft = budget - withdraw + deposit;
+                currentBalance.setText("Current Balance: $" + response[1]);
+                totalWithdraw.setText("Total Withdrawn: $" + response[2]);
+                totalDeposit.setText("Total Deposit: $" + response[3]);
+                totalBudget.setText("Remaining Budget: $" + budgetLeft + "");
+            }
+            reader.close();
+        } catch (Exception e) {
+            System.out.println("Error getting User Authentication.");
+        }
     }
 
     /**
@@ -34,7 +46,11 @@ public class BalancePage extends javax.swing.JFrame {
         depositPageButton = new javax.swing.JButton();
         currentBalance = new javax.swing.JLabel();
         totalWithdraw = new javax.swing.JLabel();
+        totalBudget = new javax.swing.JLabel();
         totalDeposit = new javax.swing.JLabel();
+        newBudget = new javax.swing.JTextField();
+        setBudget = new javax.swing.JButton();
+        errorField = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -110,58 +126,121 @@ public class BalancePage extends javax.swing.JFrame {
         totalWithdraw.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         totalWithdraw.setText("Total Withdraw: ");
 
+        totalBudget.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        totalBudget.setForeground(new java.awt.Color(0, 0, 0));
+        totalBudget.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalBudget.setText("Budget Remaining:");
+
         totalDeposit.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         totalDeposit.setForeground(new java.awt.Color(0, 153, 51));
         totalDeposit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         totalDeposit.setText("Total Deposited: ");
+        totalDeposit.setMaximumSize(new java.awt.Dimension(100, 20));
+        totalDeposit.setMinimumSize(new java.awt.Dimension(100, 20));
+        totalDeposit.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        newBudget.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        newBudget.setText("Enter Budget");
+        newBudget.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                newBudgetMouseClicked(evt);
+            }
+        });
+        newBudget.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                newBudgetKeyTyped(evt);
+            }
+        });
+
+        setBudget.setBackground(new java.awt.Color(204, 204, 204));
+        setBudget.setForeground(new java.awt.Color(0, 0, 0));
+        setBudget.setText("Set Budget");
+        setBudget.setBorder(null);
+        setBudget.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setBudgetActionPerformed(evt);
+            }
+        });
+        setBudget.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                setBudgetKeyTyped(evt);
+            }
+        });
+
+        errorField.setForeground(new java.awt.Color(153, 0, 0));
+        errorField.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
                 .addComponent(depositPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(currentBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(withdrawPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(271, 271, 271)
-                .addComponent(totalWithdraw, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(288, 288, 288))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(271, 271, 271)
-                .addComponent(totalDeposit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(288, 288, 288))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(292, 292, 292)
+                .addGap(44, 44, 44)
                 .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addComponent(withdrawPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(newBudget, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                    .addComponent(setBudget, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(errorField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(283, 283, 283)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(currentBalance, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(totalWithdraw, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(totalDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addComponent(totalBudget)))
+                        .addGap(28, 28, 28)))
+                .addGap(85, 85, 85))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(jLabel3)
-                        .addGap(52, 52, 52)
-                        .addComponent(currentBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
-                        .addComponent(totalWithdraw, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(53, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(211, 211, 211)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(depositPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(withdrawPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(58, 58, 58)
+                                        .addComponent(jLabel3))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(withdrawPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(20, 20, 20))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(154, 154, 154)
+                                .addComponent(depositPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(42, 42, 42)
+                        .addComponent(currentBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalWithdraw, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(totalDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(totalBudget, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(292, 292, 292)
+                        .addComponent(newBudget, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(setBudget, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(errorField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -191,6 +270,39 @@ public class BalancePage extends javax.swing.JFrame {
         new MainPage().setVisible(true);
         dispose();
     }//GEN-LAST:event_homeButtonActionPerformed
+
+    private void setBudgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBudgetActionPerformed
+        String stringedBudget = newBudget.getText();
+        try {
+            double newSetBudget = Double.parseDouble(stringedBudget);
+        String[] response = Balance.setNewBudget(username, newSetBudget);
+        if (response[0].equals("true")) {
+            BalancePage balancePage = new BalancePage();
+
+            // Make the WithdrawPage instance visible
+            balancePage.setVisible(true);
+
+            // Dispose of the current window
+            dispose();
+        } else {
+            errorField.setText(response[1]);
+        }
+        } catch (NumberFormatException e) {
+            errorField.setText("Enter Integers!");
+        }
+    }//GEN-LAST:event_setBudgetActionPerformed
+
+    private void newBudgetKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newBudgetKeyTyped
+
+    }//GEN-LAST:event_newBudgetKeyTyped
+
+    private void setBudgetKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_setBudgetKeyTyped
+
+    }//GEN-LAST:event_setBudgetKeyTyped
+
+    private void newBudgetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newBudgetMouseClicked
+        newBudget.setText("");
+    }//GEN-LAST:event_newBudgetMouseClicked
 
     /**
      * @param args the command line arguments
@@ -230,10 +342,14 @@ public class BalancePage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel currentBalance;
     private javax.swing.JButton depositPageButton;
+    private javax.swing.JLabel errorField;
     private javax.swing.JButton homeButton;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField newBudget;
+    private javax.swing.JButton setBudget;
+    private javax.swing.JLabel totalBudget;
     private javax.swing.JLabel totalDeposit;
     private javax.swing.JLabel totalWithdraw;
     private javax.swing.JLabel welcomeText;
