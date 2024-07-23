@@ -103,7 +103,7 @@ public class BalancePage extends javax.swing.JFrame {
 
         currentBalance.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         currentBalance.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        currentBalance.setText("Current Balance: ");
+        currentBalance.setText("Current Balance: $0");
 
         totalWithdraw.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         totalWithdraw.setForeground(new java.awt.Color(204, 0, 0));

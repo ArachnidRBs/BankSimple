@@ -153,44 +153,18 @@ public class SignupPage extends javax.swing.JFrame {
         String passwordInput = passwordField.getText();
         String confirm = passwordConfField.getText();
 
-        ArrayList<String> allUsers = new ArrayList<String>();
         if (passwordInput.equals(confirm)) {
-            try {
-                System.out.println("Attempting to read from file...");
-                BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\User\\Documents\\NetBeansProjects\\BankSimple\\src\\UserPass.txt"));
-                String line;
-                boolean foundUser = false;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println("Reading line: " + line);
-                    String[] parts = line.split(",");
-                    String user = parts[0];
-                    String pass = parts[1];
-                    allUsers.add(user + "," + pass);
-                    if (user.toLowerCase().equals(userInput.toLowerCase())) {
-                        errorField.setText("User already exists!");
-                        foundUser = true;
-                    }
-                }
-                reader.close(); // Close the reader after reading all lines
+            String[] response = Signup.signupMethod(userInput, passwordInput);
+            if (response[0].equals("true")) {
+                MainPage mainPage = new MainPage();
 
-                if (!foundUser) {
-                    try {
-                        System.out.println("Attempting to write to file...");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\User\\Documents\\NetBeansProjects\\BankSimple\\src\\UserPass.txt"));
-                        for (String userPass : allUsers) {
-                            writer.write(userPass);
-                            writer.newLine();
-                        }
-                        writer.write(userInput + "," + passwordInput);
-                        writer.close();
-                        new MainPage().setVisible(true);
-                        dispose();
-                    } catch (Exception e) {
-                        errorField.setText("An error happened while trying to read/write: " + e.getMessage());
-                    }
-                }
-            } catch (IOException e) {
-                errorField.setText("Unable to locate Database: " + e.getMessage());
+                // Make the WithdrawPage instance visible
+                mainPage.setVisible(true);
+
+                // Dispose of the current window
+                dispose();
+            } else {
+                errorField.setText(response[1]);
             }
         } else {
             errorField.setText("Password does not match!");

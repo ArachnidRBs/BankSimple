@@ -7,7 +7,6 @@
  *
  * @author User
  */
-
 import java.io.*;
 
 public class LoginPage extends javax.swing.JFrame {
@@ -157,39 +156,23 @@ public class LoginPage extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String userInput = userField.getText();
         String passwordInput = passwordField.getText();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("UserPass.txt"));// Create a BufferedReader object to read from the file
-            String line;
-            boolean foundUser = false;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String user = parts[0];
-                String pass = parts[1];
-                if (user.toLowerCase().equals(userInput.toLowerCase())) {
-                    if (pass.equals(passwordInput)) {
-                        new MainPage().setVisible(true);
-                        dispose();
-                        foundUser = true;
-                        break;
-                    } else {
-                        errorField.setText("Password was Invalid!");
-                        foundUser = true;
-                        break;
-                    }
-                }
-            }
-            if (foundUser == false){
-                errorField.setText("User was not found! Try signing up!");
-            }
-            reader.close();
-        } catch (IOException e) {
-            errorField.setText("Unable to locate Database");
+        String[] response = Login.loginMethod(userInput, passwordInput);
+        if (response[0].equals("true")) {
+            MainPage mainPage = new MainPage();
+
+            // Make the WithdrawPage instance visible
+            mainPage.setVisible(true);
+
+            // Dispose of the current window
+            dispose();
+        } else {
+            errorField.setText(response[1]);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         SignupPage signupPage = new SignupPage();
-    
+
         // Make the SignupPage instance visible
         signupPage.setVisible(true);
 
