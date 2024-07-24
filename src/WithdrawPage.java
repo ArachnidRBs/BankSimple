@@ -1,16 +1,17 @@
 
+/**
+* A banking app made for withdrawing, depositing, viewing transactions and setting a budget. This helps users bank with ease while being in their budget. The GUI is easy to navigate and user friendly
+* This part is GUI
+* 
+* @author Noor Syed, Smit Patel, Shaan, Jinay
+* @version 1.0
+* @since 2024-07-23
+*/
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.awt.Color;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-/**
- *
- * @author User
- */
 public class WithdrawPage extends javax.swing.JFrame {
 
     public static String username;
@@ -40,6 +41,7 @@ public class WithdrawPage extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         balanceButton = new javax.swing.JLabel();
         welcomeText = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         amountWithdraw = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -61,6 +63,8 @@ public class WithdrawPage extends javax.swing.JFrame {
         welcomeText.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         welcomeText.setText("Welcome ......................");
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logoSmall.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -68,20 +72,27 @@ public class WithdrawPage extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(welcomeText)
+                .addGap(192, 192, 192)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(balanceButton)
                 .addGap(23, 23, 23))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(balanceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(welcomeText)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(balanceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(welcomeText)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bankLogo.png"))); // NOI18N
@@ -158,9 +169,6 @@ public class WithdrawPage extends javax.swing.JFrame {
                         .addGap(256, 256, 256)
                         .addComponent(jLabel10))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(341, 341, 341)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(303, 303, 303)
                         .addComponent(amountWithdraw, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -168,7 +176,10 @@ public class WithdrawPage extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(withdrawButton, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                             .addComponent(currentBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                            .addComponent(errorField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(errorField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(335, 335, 335)
+                        .addComponent(jLabel3)))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -193,7 +204,7 @@ public class WithdrawPage extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel10)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -224,19 +235,23 @@ public class WithdrawPage extends javax.swing.JFrame {
     }//GEN-LAST:event_homeButtonActionPerformed
 
     private void withdrawButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_withdrawButtonActionPerformed
+        //colours to make it look neater
         Color red = new Color(102, 0, 0);
         Color green = new Color(0, 102, 0);
 
-        errorField.setForeground(red);
-        String stringedAmount = amountWithdraw.getText();
-        double amount = 0.0;
+        errorField.setForeground(red);//sets colour to red by default
+        String stringedAmount = amountWithdraw.getText();//gets withdraw text as a string
+        double amount = 0.0;//placeholder
+        
+        //attempts parsing amount
         try {
             amount = Double.parseDouble(stringedAmount);
         } catch (Exception e) {
             errorField.setText("Please enter an amount.");
             return;
         }
-
+        
+        
         try {
             String authenticatedUser = username;
             if (authenticatedUser == null) {
@@ -244,17 +259,17 @@ public class WithdrawPage extends javax.swing.JFrame {
                 return;
             }
 
-            String[] response = Balance.getBalance(authenticatedUser);
+            String[] response = Balance.getBalance(authenticatedUser);//gets balance of user by getBalance method
             if (response[0].equals("true")) {
-                double currentBalance = Double.parseDouble(response[1]);
-                double withdrawAmount = amount;
+                double currentBalance = Double.parseDouble(response[1]);//parses balance
+                double withdrawAmount = amount;//withdraw amount
 
-                if (withdrawAmount > currentBalance) {
-                    errorField.setText("Insufficient funds.");
+                if (withdrawAmount > currentBalance) {//if withdraw is greater than balance
+                    errorField.setText("Insufficient funds.");//error text
                     return;
                 }
 
-                Balance.updateBalance(authenticatedUser, -withdrawAmount);
+                Balance.updateBalance(authenticatedUser, -withdrawAmount);//updates balance
                 errorField.setText("Withdrawal successful!");
                 errorField.setForeground(green);
                 // Update the balance labels
@@ -309,6 +324,7 @@ public class WithdrawPage extends javax.swing.JFrame {
     private javax.swing.JLabel currentBalance;
     private javax.swing.JLabel errorField;
     private javax.swing.JButton homeButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;

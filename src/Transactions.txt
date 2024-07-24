@@ -1,0 +1,1 @@
+noorsyed[[1, deposit, 10000.0, 15000.0], [2, withdraw, 3000.0, 12000.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0], [0, deposit, 0.0, 0.0]]

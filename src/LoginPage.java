@@ -1,12 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-
 /**
- *
- * @author User
- */
+* A banking app made for withdrawing, depositing, viewing transactions and setting a budget. This helps users bank with ease while being in their budget. The GUI is easy to navigate and user friendly
+* This part is GUI
+* 
+* @author Noor Syed, Smit Patel, Shaan, Jinay
+* @version 1.0
+* @since 2024-07-23
+*/
 import java.io.*;
 
 public class LoginPage extends javax.swing.JFrame {
@@ -154,19 +153,19 @@ public class LoginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_userFieldActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String userInput = userField.getText();
-        String passwordInput = passwordField.getText();
-        String[] response = Login.loginMethod(userInput, passwordInput);
-        if (response[0].equals("true")) {
-            MainPage mainPage = new MainPage();
+        String userInput = userField.getText();//gets username text
+        String passwordInput = passwordField.getText();//gets password text
+        String[] response = Login.loginMethod(userInput, passwordInput);//calls loginMethod
+        if (response[0].equals("true")) {//if response is true
+            MainPage mainPage = new MainPage();//direct to mainpage
 
             // Make the WithdrawPage instance visible
-            mainPage.setVisible(true);
+            mainPage.setVisible(true);//make mainPage visible
 
             // Dispose of the current window
-            dispose();
+            dispose();//closes current window
         } else {
-            errorField.setText(response[1]);
+            errorField.setText(response[1]);//sets error text
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -1,75 +1,143 @@
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.*;
-import javax.swing.*;
-
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 /**
- *
- * @author User
- */
+* A banking app made for withdrawing, depositing, viewing transactions and setting a budget. This helps users bank with ease while being in their budget. The GUI is easy to navigate and user friendly
+* This part is GUI
+* 
+* @author Noor Syed, Smit Patel, Shaan Mehta, Jinay Desai
+* @version 1.0
+* @since 2024-07-23
+*/
+
+import java.io.BufferedReader;//imports buffer reader
+import java.io.FileReader;//imports file reader
+import java.util.*;//imports utils
+import javax.swing.*;//this is for the GUI
+
+
+
 public class TransactionsPage extends javax.swing.JFrame {
 
     public static String username;
 
     public TransactionsPage() {
-        initComponents();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("src\\AuthenticatedUser.txt"));
-            String username = reader.readLine();
-            reader.close();
-            String[] response = Balance.getBalance(username);
-            welcomeText.setText("Welcome " + username);
+    initComponents();
+    try {
+        BufferedReader reader = new BufferedReader(new FileReader("src\\AuthenticatedUser.txt"));
+        String username = reader.readLine();
+        reader.close();
 
-            String[][] responseText = Transactions.viewTransactions(username);
+        String[] balanceResponse = Balance.getBalance(username);
+        welcomeText.setText("Welcome " + username);
 
-            if (!responseText[0][0].equals("false")) {
-                String[][] highestTransaction = new String[10][4];
-                for (int i = 0; i < 10; i++) {
-                    for (int k = 0; k < 10; k++) {
-                        if (Integer.parseInt(responseText[i][0]) < Integer.parseInt(highestTransaction[k][0]) && Integer.parseInt(responseText[i][0]) != 0) {
-                            String[] oldValue = highestTransaction[k];
-                            highestTransaction[k] = responseText[i];
-                            highestTransaction[k + 1] = oldValue;
-                        }
-                    }
-                }
+        // Fetch the transactions for the user
+        String[][] responseText = Transactions.viewTransactions(username);
+        String[][] hieghestTransaction = new String[10][4];
 
-                // Update labels directly
-                for (int i = 0; i < highestTransaction.length; i++) {
-                    JLabel label = getLabelByIndex(i);
-                    if (Integer.parseInt(highestTransaction[i][0]) != 0) {
-                        label.setText("Transaction " + (i + 1) + ": " + highestTransaction[i][1]);
-                    } else {
-                        label.setText("Transaction " + (i + 1) + ": No transaction");
-                    }
+        // Initialize hieghestTransaction with default values
+        for (int i = 0; i < 10; i++) {
+            hieghestTransaction[i][0] = "0";
+            hieghestTransaction[i][1] = "Deposit";
+            hieghestTransaction[i][2] = "0";
+            hieghestTransaction[i][3] = "0";
+        }
+
+        // Sort the transactions by transaction number in descending order
+        for (int i = 0; i < responseText.length; i++) {
+            for (int k = i + 1; k < responseText.length; k++) {
+                if (Integer.parseInt(responseText[k][0]) > Integer.parseInt(responseText[i][0])) {
+                    String[] temp = responseText[i];
+                    responseText[i] = responseText[k];
+                    responseText[k] = temp;
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Error getting name or reading file" + e);
         }
-    }
 
-    private JLabel getLabelByIndex(int index) {
-        switch (index) {
-            case 0: return transactionNumber1;
-            case 1: return transactionNumber2;
-            case 2: return transactionNumber3;
-            case 3: return transactionNumber4;
-            case 4: return transactionNumber5;
-            case 5: return transactionNumber6;
-            case 6: return transactionNumber7;
-            case 7: return transactionNumber8;
-            case 8: return transactionNumber9;
-            case 9: return transactionNumber10;
-            default: throw new IllegalArgumentException("Invalid index");
+        // Copy sorted transactions to hieghestTransaction
+        for (int i = 0; i < responseText.length && i < hieghestTransaction.length; i++) {
+            hieghestTransaction[i] = responseText[i];
         }
+
+        // Update the JLabel components with the transactions
+        for (int i = 0; i < 10; i++) {
+            JLabel[] allIndexes = getTransactionIndex(i);
+            allIndexes[0].setText(hieghestTransaction[i][0]);
+            allIndexes[1].setText(hieghestTransaction[i][1]);
+            allIndexes[2].setText(hieghestTransaction[i][2]);
+            allIndexes[3].setText(hieghestTransaction[i][3]);
+        }
+    } catch (Exception e) {
+        System.out.println("Error getting name or reading file: " + e);
     }
+}
+
+private JLabel[] getTransactionIndex(int index) {
+    JLabel[] allIndexes = new JLabel[4];
+    switch (index) {
+        case 0: 
+            allIndexes[0] = transactionNumber1;
+            allIndexes[1] = type1;
+            allIndexes[2] = price1;
+            allIndexes[3] = budgetAdjustment1;
+            return allIndexes;
+        case 1: 
+            allIndexes[0] = transactionNumber2;
+            allIndexes[1] = type2;
+            allIndexes[2] = price2;
+            allIndexes[3] = budgetAdjustment2;
+            return allIndexes;
+        case 2: 
+            allIndexes[0] = transactionNumber3;
+            allIndexes[1] = type3;
+            allIndexes[2] = price3;
+            allIndexes[3] = budgetAdjustment3;
+            return allIndexes;
+        case 3: 
+            allIndexes[0] = transactionNumber4;
+            allIndexes[1] = type4;
+            allIndexes[2] = price4;
+            allIndexes[3] = budgetAdjustment4;
+            return allIndexes;
+        case 4: 
+            allIndexes[0] = transactionNumber5;
+            allIndexes[1] = type5;
+            allIndexes[2] = price5;
+            allIndexes[3] = budgetAdjustment5;
+            return allIndexes;
+        case 5: 
+            allIndexes[0] = transactionNumber6;
+            allIndexes[1] = type6;
+            allIndexes[2] = price6;
+            allIndexes[3] = budgetAdjustment6;
+            return allIndexes;
+        case 6: 
+            allIndexes[0] = transactionNumber7;
+            allIndexes[1] = type7;
+            allIndexes[2] = price7;
+            allIndexes[3] = budgetAdjustment7;
+            return allIndexes;
+        case 7: 
+            allIndexes[0] = transactionNumber8;
+            allIndexes[1] = type8;
+            allIndexes[2] = price8;
+            allIndexes[3] = budgetAdjustment8;
+            return allIndexes;
+        case 8: 
+            allIndexes[0] = transactionNumber9;
+            allIndexes[1] = type9;
+            allIndexes[2] = price9;
+            allIndexes[3] = budgetAdjustment9;
+            return allIndexes;
+        case 9: 
+            allIndexes[0] = transactionNumber10;
+            allIndexes[1] = type10;
+            allIndexes[2] = price10;
+            allIndexes[3] = budgetAdjustment10;
+            return allIndexes;
+        default: 
+            throw new IllegalArgumentException("Invalid index");
+    }
+}
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,6 +152,7 @@ public class TransactionsPage extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         balanceButton = new javax.swing.JLabel();
         welcomeText = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -155,27 +224,33 @@ public class TransactionsPage extends javax.swing.JFrame {
         welcomeText.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         welcomeText.setText("Welcome ......................");
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logoSmall.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(18, 18, 18)
                 .addComponent(welcomeText)
+                .addGap(175, 175, 175)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(balanceButton)
                 .addGap(23, 23, 23))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(balanceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(welcomeText)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(balanceButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel3.setBackground(new java.awt.Color(0, 204, 51));
@@ -810,7 +885,7 @@ public class TransactionsPage extends javax.swing.JFrame {
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(1, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -883,6 +958,7 @@ public class TransactionsPage extends javax.swing.JFrame {
     private javax.swing.JLabel budgetAdjustment8;
     private javax.swing.JLabel budgetAdjustment9;
     private javax.swing.JButton homeButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

@@ -1,10 +1,11 @@
-
 /**
- *
- * @author User
- */
-import java.io.*;
-import java.util.*;
+* A banking app made for withdrawing, depositing, viewing transactions and setting a budget. This helps users bank with ease while being in their budget. The GUI is easy to navigate and user friendly
+* This part is GUI
+* 
+* @author Noor Syed, Smit Patel, Shaan, Jinay
+* @version 1.0
+* @since 2024-07-23
+*/
 
 public class SignupPage extends javax.swing.JFrame {
 
@@ -149,24 +150,24 @@ public class SignupPage extends javax.swing.JFrame {
     }//GEN-LAST:event_usernameFieldActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String userInput = usernameField.getText();
-        String passwordInput = passwordField.getText();
-        String confirm = passwordConfField.getText();
+        String userInput = usernameField.getText();//gets username text
+        String passwordInput = passwordField.getText();//gets password text
+        String confirm = passwordConfField.getText();//gets confirm text
 
-        if (passwordInput.equals(confirm)) {
-            String[] response = Signup.signupMethod(userInput, passwordInput);
-            if (response[0].equals("true")) {
-                MainPage mainPage = new MainPage();
+        if (passwordInput.equals(confirm)) {//if confirm and password match
+            String[] response = Signup.signupMethod(userInput, passwordInput);//calls signup method
+            if (response[0].equals("true")) {//if response is true
+                MainPage mainPage = new MainPage();//opens new MainPage
 
                 // Make the WithdrawPage instance visible
-                mainPage.setVisible(true);
+                mainPage.setVisible(true);//makes mainpage visible
 
                 // Dispose of the current window
-                dispose();
+                dispose();//closes current window
             } else {
-                errorField.setText(response[1]);
+                errorField.setText(response[1]);//error field text
             }
-        } else {
+        } else {//if password does not match
             errorField.setText("Password does not match!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed

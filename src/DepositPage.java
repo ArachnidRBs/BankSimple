@@ -1,16 +1,17 @@
+/**
+* A banking app made for withdrawing, depositing, viewing transactions and setting a budget. This helps users bank with ease while being in their budget. The GUI is easy to navigate and user friendly
+* This part is the GUI
+* 
+* @author Noor Syed, Smit Patel, Shaan, Jinay
+* @version 1.0
+* @since 2024-07-23
+*/
+
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 
-/**
- *
- * @author User
- */
 public class DepositPage extends javax.swing.JFrame {
     public static String username;
     /**
@@ -40,6 +41,7 @@ public class DepositPage extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         balanceButton = new javax.swing.JLabel();
         welcomeText = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         depositButton = new javax.swing.JButton();
         amountDeposit = new javax.swing.JTextField();
@@ -67,6 +69,8 @@ public class DepositPage extends javax.swing.JFrame {
         welcomeText.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         welcomeText.setText("Welcome ......................");
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logoSmall.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -74,20 +78,23 @@ public class DepositPage extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(welcomeText)
+                .addGap(185, 185, 185)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(balanceButton)
                 .addGap(23, 23, 23))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(balanceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(welcomeText)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(balanceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bankLogo.png"))); // NOI18N
@@ -200,7 +207,7 @@ public class DepositPage extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel10)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -218,42 +225,49 @@ public class DepositPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void depositButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_depositButtonActionPerformed
+        //colours to make it look better
         Color red = new Color(102, 0, 0);
         Color green = new Color(0, 102, 0);
-
-        errorField.setForeground(red);
-        String stringedAmount = amountDeposit.getText();
-        double amount = 0.0;
+        
+        
+        errorField.setForeground(red);//by default colour is set to red
+        String stringedAmount = amountDeposit.getText();//gets amount as a string
+        
+        double amount = 0.0;//sets default amount to $0
+        
+        //tries parsing
         try {
             amount = Double.parseDouble(stringedAmount);
         } catch (Exception e) {
             errorField.setText("Please enter an amount.");
             return;
         }
-
+        
         try {
             String authenticatedUser = username;
             if (authenticatedUser == null) {
-                errorField.setText("No authenticated user found. Please log in first.");
+                errorField.setText("No authenticated user found. Please log in first.");//sets text to error
                 return;
             }
 
-            String[] response = Balance.getBalance(authenticatedUser);
-            if (response[0].equals("true")) {
-                double currentBalance = Double.parseDouble(response[1]);
-                double depositAmount = amount;
+            String[] response = Balance.getBalance(authenticatedUser);//gets the balance
+            if (response[0].equals("true")) {//if response is true
+                double currentBalance = Double.parseDouble(response[1]);//parses balance
+                double depositAmount = amount;//gets the amount
 
-                Balance.updateBalance(authenticatedUser, depositAmount);
-                errorField.setText("Deposit successful!");
-                errorField.setForeground(green);
+                Balance.updateBalance(authenticatedUser, depositAmount);//calls updateBalance method
+                errorField.setText("Deposit successful!");//sets text
+                errorField.setForeground(green);//sets colour green
                 // Update the balance labels
-                String[] newBalance = Balance.getBalance(authenticatedUser);
-                this.currentBalance.setText("Current Balance: $" + newBalance[1]);
+                String[] newBalance = Balance.getBalance(authenticatedUser);//gets new balance from getBalance method
+                this.currentBalance.setText("Current Balance: $" + newBalance[1]);//sets balance text
             } else {
-                errorField.setText("Balance Error!");
+                errorField.setText("Balance Error!");//sets error text field
             }
         } catch (Exception e) {
             errorField.setText("An error occured!" + e);
+            e.printStackTrace();
+            System.out.println(e);
         }
     }//GEN-LAST:event_depositButtonActionPerformed
 
@@ -318,6 +332,7 @@ public class DepositPage extends javax.swing.JFrame {
     private javax.swing.JButton depositButton;
     private javax.swing.JLabel errorField;
     private javax.swing.JButton homeButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
